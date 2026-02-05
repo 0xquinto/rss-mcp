@@ -2,7 +2,7 @@
   "mcpServers": {
     "rss-mcp": {
       "type": "stdio",
-      "command": "npx",
+      "command": "bunx",
       "args": ["@0xquinto/rss-mcp"]
     }
   }

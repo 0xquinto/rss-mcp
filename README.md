@@ -30,17 +30,16 @@ Inspired by [Andrej Karpathy's post](https://x.com/karpathy/status/2018043254986
 /plugin install rss-mcp@0xquinto-rss-mcp
 ```
 
+### Via bunx
+
+```bash
+bunx @0xquinto/rss-mcp
+```
+
 ### Via npx
 
 ```bash
 npx @0xquinto/rss-mcp
-```
-
-### Manual Setup
-
-```bash
-npm install -g @0xquinto/rss-mcp
-rss-mcp
 ```
 
 ## Tools
@@ -73,7 +72,7 @@ Add to your project or user MCP settings:
 {
   "mcpServers": {
     "rss-mcp": {
-      "command": "npx",
+      "command": "bunx",
       "args": ["@0xquinto/rss-mcp"]
     }
   }
@@ -88,7 +87,7 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "rss-mcp": {
-      "command": "npx",
+      "command": "bunx",
       "args": ["@0xquinto/rss-mcp"]
     }
   }
