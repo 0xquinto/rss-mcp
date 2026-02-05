@@ -8,7 +8,13 @@ Inspired by [Andrej Karpathy's post](https://x.com/karpathy/status/2018043254986
 
 > "Finding myself going back to RSS/Atom feeds a lot more recently. There's a lot more higher quality longform and a lot less slop intended to provoke... We should bring back RSS - it's open, pervasive, hackable."
 
-**Quick start with curated feeds**: Import the [Most Popular Blogs of Hacker News 2025](https://gist.github.com/emschwartz/e6d2bf860ccc367fe37ff953ba6de66b) OPML file to get 92 high-quality tech blogs.
+**Quick start with curated feeds**: Import the [Most Popular Blogs of Hacker News 2025](https://gist.github.com/emschwartz/e6d2bf860ccc367fe37ff953ba6de66b) OPML file to get 92 high-quality tech blogs:
+
+```
+import the OPML file from https://gist.github.com/emschwartz/e6d2bf860ccc367fe37ff953ba6de66b
+```
+
+Claude will automatically use the `import_opml` tool to add all feeds.
 
 ## Features
 
@@ -41,22 +47,6 @@ bunx @0xquinto/rss-mcp
 ```bash
 npx @0xquinto/rss-mcp
 ```
-
-## Quick Start
-
-After installing, import the curated HackerNews 2025 OPML file to get started with 92 high-quality tech blogs:
-
-```
-import the OPML file from https://gist.github.com/emschwartz/e6d2bf860ccc367fe37ff953ba6de66b
-```
-
-Claude will automatically use the `import_opml` tool to add all feeds.
-
-Then try:
-
-- "Show me today's posts"
-- "Search for posts about AI"
-- "What are the most popular posts this week?"
 
 ## Tools
 
