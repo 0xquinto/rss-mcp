@@ -1,0 +1,19 @@
+{
+  "name": "0xquinto-rss-mcp",
+  "owner": {
+    "name": "Diego Gomez",
+    "url": "https://github.com/0xquinto"
+  },
+  "plugins": [
+    {
+      "name": "rss-mcp",
+      "source": "./",
+      "description": "MCP server for RSS feed management with full-text search and HackerNews ranking",
+      "version": "1.0.0",
+      "author": {
+        "name": "Diego Gomez"
+      },
+      "keywords": ["rss", "feeds", "mcp", "hackernews"]
+    }
+  ]
+}

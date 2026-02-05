@@ -1,0 +1,48 @@
+{
+  "name": "@0xquinto/rss-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for RSS feed management with full-text search and HackerNews ranking",
+  "main": "dist/index.js",
+  "bin": {
+    "rss-mcp": "dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "rss",
+    "feeds",
+    "hackernews",
+    "claude",
+    "ai",
+    "model-context-protocol"
+  ],
+  "author": "Diego Gomez <diego.gomez210@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xquinto/rss-mcp"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@mozilla/readability": "^0.6.0",
+    "better-sqlite3": "^12.0.0",
+    "feedsmith": "^1.0.0",
+    "linkedom": "^0.18.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.7.0"
+  }
+}
