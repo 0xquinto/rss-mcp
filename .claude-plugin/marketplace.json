@@ -1,5 +1,5 @@
 {
-  "name": "0xquinto-rss-mcp",
+  "name": "0xquinto-marketplace",
   "owner": {
     "name": "Diego Gomez",
     "url": "https://github.com/0xquinto"
@@ -13,12 +13,7 @@
       "author": {
         "name": "Diego Gomez"
       },
-      "keywords": [
-        "rss",
-        "feeds",
-        "mcp",
-        "hackernews"
-      ]
+      "keywords": ["rss", "feeds", "mcp", "hackernews"]
     }
   ]
 }

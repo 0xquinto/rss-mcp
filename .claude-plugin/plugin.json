@@ -9,11 +9,5 @@
   "homepage": "https://github.com/0xquinto/rss-mcp",
   "repository": "https://github.com/0xquinto/rss-mcp",
   "license": "MIT",
-  "keywords": [
-    "rss",
-    "feeds",
-    "mcp",
-    "hackernews",
-    "news"
-  ]
+  "keywords": ["rss", "feeds", "mcp", "hackernews", "news"]
 }

@@ -66,61 +66,9 @@ npx @0xquinto/rss-mcp
 | `mark_read`         | Mark posts as read                                                |
 | `mark_unread`       | Mark posts as unread                                              |
 
-### `get_post_content`
-
-Retrieves article content with chunked reading support for long articles (e.g. interview transcripts).
-
-| Parameter    | Type   | Default | Description                                           |
-| ------------ | ------ | ------- | ----------------------------------------------------- |
-| `post_id`    | number | —       | ID of the post (required)                             |
-| `max_length` | number | 5000    | Max characters per chunk. Use 100000 for full content |
-| `offset`     | number | 0       | Character offset to start reading from                |
-
-The response includes `total_length`, `offset`, `chunk_length`, and `truncated` so you can paginate through long content:
-
-```
-get_post_content(post_id=123, max_length=20000, offset=0)
-get_post_content(post_id=123, max_length=20000, offset=20000)
-# ...continue until truncated=false
-```
-
-Content is fetched from the original URL and cached on first access.
-
 ## Data
 
 Posts are stored in `~/.rss-mcp/rss.db` (SQLite). The database and FTS5 index are created automatically on first run.
-
-## MCP Configuration
-
-### Claude Code
-
-Add to your project or user MCP settings:
-
-```json
-{
-  "mcpServers": {
-    "rss-mcp": {
-      "command": "bunx",
-      "args": ["@0xquinto/rss-mcp"]
-    }
-  }
-}
-```
-
-### Claude Desktop
-
-Add to `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "rss-mcp": {
-      "command": "bunx",
-      "args": ["@0xquinto/rss-mcp"]
-    }
-  }
-}
-```
 
 ## License
 
