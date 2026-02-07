@@ -1,4 +1,5 @@
 import { parseFeed as parseRssFeed } from "feedsmith";
+import type { Feed } from "feedsmith";
 import type { PostEntry } from "./db.js";
 
 export interface FetchResult {
@@ -44,49 +45,116 @@ export interface ParsedFeed {
   entries: PostEntry[];
 }
 
-interface FeedItem {
-  id?: string;
-  link?: string;
-  title?: string;
-  description?: string;
-  content?: string;
-  author?: { name?: string; email?: string } | string;
-  published?: string | Date;
+function toISOString(date: string | undefined): string | undefined {
+  if (!date) return undefined;
+  const parsed = new Date(date);
+  if (isNaN(parsed.getTime())) return undefined;
+  return parsed.toISOString();
 }
 
-interface FeedData {
-  title?: string;
-  link?: string;
-  items?: FeedItem[];
+function extractEntries(result: Feed): PostEntry[] {
+  switch (result.type) {
+    case "rss": {
+      const feed = result.feed;
+      return (feed.items ?? []).map((item) => ({
+        guid: item.guid ?? item.link ?? "",
+        title: item.title,
+        url: item.link,
+        summary: item.description,
+        author: item.authors?.[0],
+        published_at: toISOString(item.pubDate ?? item.dc?.date),
+      }));
+    }
+    case "atom": {
+      const feed = result.feed;
+      return (feed.entries ?? []).map((entry) => {
+        const link =
+          entry.links?.find((l) => l.rel === "alternate")?.href ??
+          entry.links?.[0]?.href;
+        let authorStr: string | undefined;
+        if (entry.authors?.[0]) {
+          authorStr = entry.authors[0].name ?? entry.authors[0].email;
+        }
+        return {
+          guid: entry.id ?? link ?? "",
+          title: typeof entry.title === "string" ? entry.title : undefined,
+          url: link,
+          summary:
+            typeof entry.summary === "string"
+              ? entry.summary
+              : typeof entry.content === "string"
+                ? entry.content
+                : undefined,
+          author: authorStr,
+          published_at: toISOString(entry.published ?? entry.updated),
+        };
+      });
+    }
+    case "json": {
+      const feed = result.feed;
+      return (feed.items ?? []).map((item) => ({
+        guid: item.id ?? item.url ?? "",
+        title: item.title,
+        url: item.url,
+        summary: item.summary ?? item.content_html ?? item.content_text,
+        author: item.authors?.[0]?.name,
+        published_at: toISOString(item.date_published ?? item.date_modified),
+      }));
+    }
+    case "rdf": {
+      const feed = result.feed;
+      return (feed.items ?? []).map((item) => ({
+        guid: item.link ?? "",
+        title: item.title,
+        url: item.link,
+        summary: item.description,
+        author: item.dc?.creator,
+        published_at: toISOString(item.dc?.date),
+      }));
+    }
+  }
+}
+
+function extractFeedMeta(result: Feed): {
+  title: string | null;
+  siteUrl: string | null;
+} {
+  switch (result.type) {
+    case "rss":
+      return {
+        title: result.feed.title ?? null,
+        siteUrl: result.feed.link ?? null,
+      };
+    case "atom": {
+      const link =
+        result.feed.links?.find((l) => l.rel === "alternate")?.href ??
+        result.feed.links?.[0]?.href;
+      return {
+        title: typeof result.feed.title === "string" ? result.feed.title : null,
+        siteUrl: link ?? null,
+      };
+    }
+    case "json":
+      return {
+        title: result.feed.title ?? null,
+        siteUrl: result.feed.home_page_url ?? null,
+      };
+    case "rdf":
+      return {
+        title: result.feed.title ?? null,
+        siteUrl: result.feed.link ?? null,
+      };
+  }
 }
 
 export function parseFeed(xml: string): ParsedFeed {
   const result = parseRssFeed(xml);
-  const feed = result.feed as FeedData;
-
-  const entries: PostEntry[] = (feed.items ?? []).map((item: FeedItem) => {
-    let authorStr: string | undefined;
-    if (typeof item.author === "string") {
-      authorStr = item.author;
-    } else if (item.author) {
-      authorStr = item.author.name ?? item.author.email;
-    }
-
-    return {
-      guid: item.id ?? item.link ?? "",
-      title: item.title,
-      url: item.link,
-      summary: item.description ?? item.content,
-      author: authorStr,
-      published_at: item.published
-        ? new Date(item.published).toISOString()
-        : undefined,
-    };
-  });
+  const meta = extractFeedMeta(result);
+  const entries = extractEntries(result);
 
   return {
-    title: feed.title ?? null,
-    siteUrl: feed.link ?? null,
+    title: meta.title,
+    siteUrl: meta.siteUrl,
     entries,
   };
 }

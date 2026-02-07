@@ -198,14 +198,23 @@ server.tool(
   "get_post_content",
   {
     post_id: z.number().describe("ID of the post"),
-    full: z
-      .boolean()
+    max_length: z
+      .number()
       .optional()
-      .default(false)
-      .describe("Return full content without truncation"),
+      .default(5000)
+      .describe(
+        "Max characters to return per chunk (default 5000). Use a large value like 100000 for full content.",
+      ),
+    offset: z
+      .number()
+      .optional()
+      .default(0)
+      .describe(
+        "Character offset to start reading from. Use with max_length to paginate through long content.",
+      ),
   },
-  async ({ post_id, full }) => {
-    let result = db.getPostContent(post_id, full);
+  async ({ post_id, max_length, offset }) => {
+    let result = db.getPostContent(post_id, max_length, offset);
 
     if (!result) {
       return {
@@ -220,11 +229,11 @@ server.tool(
     }
 
     // If no content yet, fetch it
-    if (!result.content && result.url) {
+    if (!result.content && result.url && offset === 0) {
       const extractedContent = await fetchAndExtract(result.url);
       if (extractedContent) {
         db.updatePostContent(post_id, extractedContent);
-        result = db.getPostContent(post_id, full);
+        result = db.getPostContent(post_id, max_length, offset);
       }
     }
 

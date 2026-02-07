@@ -168,8 +168,14 @@ export interface PostEntry {
 export function upsertPosts(feedId: number, entries: PostEntry[]): number {
   const db = getDb();
   const stmt = db.prepare(
-    `INSERT OR IGNORE INTO posts (feed_id, guid, title, url, summary, author, published_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO posts (feed_id, guid, title, url, summary, author, published_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(feed_id, guid) DO UPDATE SET
+       published_at = COALESCE(posts.published_at, excluded.published_at),
+       title = COALESCE(posts.title, excluded.title),
+       url = COALESCE(posts.url, excluded.url),
+       summary = COALESCE(posts.summary, excluded.summary),
+       author = COALESCE(posts.author, excluded.author)`,
   );
 
   let count = 0;
@@ -308,9 +314,7 @@ export function getDailyDigest(
   }));
 }
 
-const MAX_CONTENT_LENGTH = 5000;
-const TRUNCATION_MARKER =
-  "\n\n[Content truncated. Use full=true for complete article.]";
+const DEFAULT_CONTENT_LENGTH = 5000;
 
 export function updatePostContent(postId: number, content: string): void {
   const db = getDb();
@@ -319,11 +323,15 @@ export function updatePostContent(postId: number, content: string): void {
 
 export interface PostContent extends Post {
   truncated: boolean;
+  total_length: number;
+  offset: number;
+  chunk_length: number;
 }
 
 export function getPostContent(
   postId: number,
-  full: boolean = false,
+  maxLength: number = DEFAULT_CONTENT_LENGTH,
+  offset: number = 0,
 ): PostContent | null {
   const db = getDb();
   const row = db
@@ -336,13 +344,17 @@ export function getPostContent(
 
   if (!row) return null;
 
-  let content = row.content ?? "";
-  let truncated = false;
+  const fullContent = row.content ?? "";
+  const totalLength = fullContent.length;
+  const chunk = fullContent.slice(offset, offset + maxLength);
+  const truncated = offset + maxLength < totalLength;
 
-  if (!full && content.length > MAX_CONTENT_LENGTH) {
-    content = content.slice(0, MAX_CONTENT_LENGTH) + TRUNCATION_MARKER;
-    truncated = true;
-  }
-
-  return { ...row, content, truncated };
+  return {
+    ...row,
+    content: chunk,
+    truncated,
+    total_length: totalLength,
+    offset,
+    chunk_length: chunk.length,
+  };
 }
