@@ -11,7 +11,9 @@
     "build": "bun run tsc",
     "start": "bun dist/index.js",
     "dev": "bun --watch src/index.ts",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "version:bump": "node scripts/bump-version.mjs",
+    "release": "node scripts/bump-version.mjs patch && npm publish --access public && git add -A && git commit -m \"chore: release v$(node -p \"require('./package.json').version\")\" && git push"
   },
   "keywords": [
     "mcp",
