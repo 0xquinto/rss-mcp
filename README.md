@@ -50,19 +50,39 @@ npx @0xquinto/rss-mcp
 
 ## Tools
 
-| Tool                | Description                                                        |
-| ------------------- | ------------------------------------------------------------------ |
-| `list_feeds`        | List all subscribed feeds                                          |
-| `add_feed`          | Subscribe to a feed by URL                                         |
-| `remove_feed`       | Unsubscribe and delete all posts for a feed                        |
-| `import_opml`       | Bulk import feeds from an OPML file                                |
-| `refresh_feeds`     | Fetch latest posts (all feeds or a specific one)                   |
-| `get_posts`         | Query posts with filtering, pagination, and full-text search       |
-| `get_post_content`  | Retrieve full article content (fetched and cached on first access) |
-| `get_daily_digest`  | Get compact digest of recent posts for synthesis                   |
-| `get_popular_posts` | Rank recent posts by HackerNews engagement                         |
-| `mark_read`         | Mark posts as read                                                 |
-| `mark_unread`       | Mark posts as unread                                               |
+| Tool                | Description                                                       |
+| ------------------- | ----------------------------------------------------------------- |
+| `list_feeds`        | List all subscribed feeds                                         |
+| `add_feed`          | Subscribe to a feed by URL                                        |
+| `remove_feed`       | Unsubscribe and delete all posts for a feed                       |
+| `import_opml`       | Bulk import feeds from an OPML file                               |
+| `refresh_feeds`     | Fetch latest posts (all feeds or a specific one)                  |
+| `get_posts`         | Query posts with filtering, pagination, and full-text search      |
+| `get_post_content`  | Retrieve article content with pagination (`max_length`, `offset`) |
+| `get_daily_digest`  | Get compact digest of recent posts for synthesis                  |
+| `get_popular_posts` | Rank recent posts by HackerNews engagement                        |
+| `mark_read`         | Mark posts as read                                                |
+| `mark_unread`       | Mark posts as unread                                              |
+
+### `get_post_content`
+
+Retrieves article content with chunked reading support for long articles (e.g. interview transcripts).
+
+| Parameter    | Type   | Default | Description                                           |
+| ------------ | ------ | ------- | ----------------------------------------------------- |
+| `post_id`    | number | —       | ID of the post (required)                             |
+| `max_length` | number | 5000    | Max characters per chunk. Use 100000 for full content |
+| `offset`     | number | 0       | Character offset to start reading from                |
+
+The response includes `total_length`, `offset`, `chunk_length`, and `truncated` so you can paginate through long content:
+
+```
+get_post_content(post_id=123, max_length=20000, offset=0)
+get_post_content(post_id=123, max_length=20000, offset=20000)
+# ...continue until truncated=false
+```
+
+Content is fetched from the original URL and cached on first access.
 
 ## Data
 
