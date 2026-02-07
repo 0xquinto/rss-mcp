@@ -1,5 +1,7 @@
 # RSS MCP Server
 
+![RSS MCP Server](https://repository-images.githubusercontent.com/1150674405/60bced96-ed2d-4f45-8f16-397fdffd7ef2)
+
 An MCP server that lets AI assistants subscribe to, fetch, search, and manage RSS feeds. Built with TypeScript and SQLite with full-text search.
 
 ## Inspiration
