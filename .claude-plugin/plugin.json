@@ -1,6 +1,6 @@
 {
   "name": "rss-mcp",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "MCP server for RSS feed management with full-text search and HackerNews ranking",
   "author": {
     "name": "Diego Gomez",
@@ -9,5 +9,11 @@
   "homepage": "https://github.com/0xquinto/rss-mcp",
   "repository": "https://github.com/0xquinto/rss-mcp",
   "license": "MIT",
-  "keywords": ["rss", "feeds", "mcp", "hackernews", "news"]
+  "keywords": [
+    "rss",
+    "feeds",
+    "mcp",
+    "hackernews",
+    "news"
+  ]
 }
